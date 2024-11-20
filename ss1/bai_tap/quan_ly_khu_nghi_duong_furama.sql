@@ -275,7 +275,9 @@ JOIN loai_khach lk ON kh.id_loai_khach = lk.id_loai_khach
 WHERE lk.ten_loai_khach = 'Diamond'
 GROUP BY kh.id_khach_hang
 ORDER BY so_lan_dat_phong ASC;
--- 5. Hiển thị IDKhachHang, HoTen, TenLoaiKhach, IDHopDong, TenDichVu, NgayLamHopDong, NgayKetThuc, TongTien (Với TongTien được tính theo công thức như sau: ChiPhiThue + SoLuong*Gia, với SoLuong và Giá là từ bảng DichVuDiKem) cho tất cả các Khách hàng đã từng đặt phỏng. (Những Khách hàng nào chưa từng đặt phòng cũng phải hiển thị ra).
+-- 5. Hiển thị IDKhachHang, HoTen, TenLoaiKhach, IDHopDong, TenDichVu, NgayLamHopDong, NgayKetThuc, TongTien 
+-- (Với TongTien được tính theo công thức như sau: ChiPhiThue + SoLuong*Gia, với SoLuong và Giá là từ bảng DichVuDiKem) 
+-- cho tất cả các Khách hàng đã từng đặt phỏng. (Những Khách hàng nào chưa từng đặt phòng cũng phải hiển thị ra).
 select kh.id_khach_hang, kh.ho_ten, lk.ten_loai_khach, hd.id_hop_dong, dv.ten_dich_vu, hd.ngay_lam_hop_dong, hd.ngay_ket_thuc,
 dv.chi_phi_thue + ifnull(sum(hdct.so_luong *dvdk.gia),0) as tong_tien		
 from khach_hang kh
@@ -390,4 +392,24 @@ SELECT
     ngay_sinh, 
     dia_chi
 FROM khach_hang;
+-- 1. Hiển thị thông tin của tất cả nhân viên thuộc bộ phận hành chính có là họ “Nguyễn”
+select * from nhan_vien nv 
+inner join bo_phan bp on nv.id_bo_phan = bp.id_bo_phan 
+where bp.id_bo_phan = 2 and nv.ho_ten like 'Nguyen%';
+-- 2. Hiển thị thông tin của tất cả khách hàng có năm sinh từ 1990 đến 1985 và thuộc loại khách hàng Diamond
+select 
+-- 3. Đếm xem tương ứng với mỗi khách hàng đã từng đặt phòng bao nhiêu lần. Kết quả hiển thị được sắp xếp tăng dần theo số lần đặt phòng của khách hàng. Chỉ đếm những khách hàng nào có số lần đặt từ 2 lần trở lên.
 
+-- 4. Hiển thị ma_khach_hang, ho_ten, tong_tien mà khách hàng đã làm hợp đồng  (Với tổng tiền được tính từ  Chi Phí Thuê) cho tất cả các khách hàng đã từng đặt phòng. (những khách hàng nào chưa từng đặt phòng cũng phải hiển thị ra).
+
+-- 5.Hiển thị ma_dich_vu, ten_dich_vu, dien_tich, chi_phi_thue, ten_loai_dich_vu của tất cả các loại dịch vụ không được đặt trong 2021.
+
+-- 6. Xóa những khách hàng có hợp đồng trước năm 2021 (chú ý ràng buộc giữa các bảng).
+
+-- 7. Cập nhật giá cho các dịch vụ đi kèm được sử dụng trên 10 lần tronh nam 2020 lên gấp đôi.
+
+-- 8. Hiển thị thông tin của tất cả các nhân viên và khách hàng có trong hệ thống, thông tin hiển thị bao gồm id (ma_nhan_vien, ma_khach_hang), ho_ten, email, so_dien_thoai, ngay_sinh, dia_chi.
+
+-- 9.	Tạo khung nhìn có tên là v_nhan_vien để lấy được thông tin của tất cả các nhân viên có địa chỉ là “Hải Châu” và đã từng lập hợp đồng cho một hoặc nhiều khách hàng bất kì với ngày lập hợp đồng là “12/12/2019”.
+
+-- 10.	Tạo Stored Procedure sp_xoa_khach_hang dùng để xóa thông tin của một khách hàng nào đó với ma_khach_hang được truyền vào như là 1 tham số của sp_xoa_khach_hang.

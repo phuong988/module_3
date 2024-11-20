@@ -2,26 +2,25 @@ create database library;
 use library;
 
 create table authors(
-
 	id int primary key auto_increment,
-	name varchar(50)
+	name varchar(50) not null
 );
 
 create table category(
 	id int primary key auto_increment,
-    name varchar(50)
+    name varchar(50) not null
 );
 
 create table students(
 	id int auto_increment primary key,
-    name varchar(50),
+    name varchar(50) not null,
     class_name varchar(50),
     birthday date
 );
 
 create table books(
 	id int auto_increment primary key,
-    title varchar(50),
+    title varchar(50) not null,
     page_size varchar(9),
     author_id int,
     category_id int,
@@ -31,8 +30,8 @@ create table books(
 
 create table borrows(
 	id int primary key auto_increment,
-	student_id int,
-    book_id int,
+	student_id int not null,
+    book_id int not null,
 	borrow_date date,
     return_date date,
     foreign key (student_id) references students(id),
