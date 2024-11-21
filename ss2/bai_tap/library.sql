@@ -112,6 +112,48 @@ limit 2;
  select s.name as student_name, s.class_name, count(br.student_id) as student_borrow_count
  from borrows br
  join students s on s.id = br.student_id
- group by s.name,s.class_name
+ group by s.id,s.class_name
  order by student_borrow_count desc
  limit 3;
+			-- bài 4 sử dụng 1 số hàm gộp trong mysql
+-- Thông kê các đầu sách được mượn nhiều nhất
+select b.title, ifnull(count(br.book_id),0) as borrow_count
+from books b 
+left join borrows br ON b.id = br.book_id
+group by b.id, b.title
+order by borrow_count desc;
+
+
+
+-- Thông kê các đầu sách chưa được mượn	
+-- cách 1:  
+select b.title as book_name
+from books b
+left join borrows br on br.book_id = b.id
+where br.book_id is null;
+
+-- cách 2: xử dụng not exists để lọc ra từng bản ghi không có trong borrow, hoạt động giống 2 vòng lặp lồng nhau .
+select b.title as book_name
+from books b
+where not exists (
+select * from borrows br where b.id = br.book_id);
+
+-- cách 3: xử dụng not in để so sánh id của từng quyển sách với bảng được trả về từ truy vấn con
+select b.title as book_name
+from books b
+where b.id not in(
+select br.book_id from borrows br);
+-- Lấy ra danh sách các học viên đã từng mượn sách và sắp xếp  theo số lượng mượn sách từ lớn đến nhỏ	
+select s.name, count(br.book_id) as borrow_book
+from students s
+left join borrows br on s.id = br.student_id
+left join books b on br.book_id = b.id
+group by s.id
+order by borrow_book desc;
+-- Lấy ra các học viên mượn sách nhiều nhất của thư viện					
+select s.id,s.name,count(br.book_id) as borrow_book
+from students s
+left join borrows br on s.id = br.student_id
+group by s.id
+order by borrow_book desc
+limit 3;
