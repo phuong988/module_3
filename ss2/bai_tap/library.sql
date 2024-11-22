@@ -123,8 +123,6 @@ left join borrows br ON b.id = br.book_id
 group by b.id, b.title
 order by borrow_count desc;
 
-
-
 -- Thông kê các đầu sách chưa được mượn	
 -- cách 1:  
 select b.title as book_name
@@ -143,6 +141,7 @@ select b.title as book_name
 from books b
 where b.id not in(
 select br.book_id from borrows br);
+
 -- Lấy ra danh sách các học viên đã từng mượn sách và sắp xếp  theo số lượng mượn sách từ lớn đến nhỏ	
 select s.name, count(br.book_id) as borrow_book
 from students s
@@ -150,6 +149,7 @@ left join borrows br on s.id = br.student_id
 left join books b on br.book_id = b.id
 group by s.id
 order by borrow_book desc;
+
 -- Lấy ra các học viên mượn sách nhiều nhất của thư viện					
 select s.id,s.name,count(br.book_id) as borrow_book
 from students s
@@ -157,3 +157,47 @@ left join borrows br on s.id = br.student_id
 group by s.id
 order by borrow_book desc
 limit 3;
+						-- bài 5: view, index, store procedure
+-- Tao index cho cột  title của bảng books
+-- cách 1:
+create index index_title on books(title);
+-- cách 2:
+alter table books add index idx_title (title); 
+
+-- Tạo 1 view để lấy ra danh sách các quyển sách đã được mượn, có hiển thị thêm cột số lần đã được mượn		
+create  view display_list_borrow_books AS
+select b.title book_name , count(br.book_id) as borrow_count
+from books b
+left join borrows br on br.book_id = b.id
+group by b.id;
+
+select * from display_list_borrow_books;
+
+-- Viết 1 stored procedure thêm mới book trong database với tham số kiểu IN					
+delimiter //
+create procedure add_new_book(
+	in book_title varchar(50),
+    in book_page_size varchar(9),
+    in book_author_id int,
+	in book_category_id int
+)
+Begin
+	insert into books(title, page_size, author_id, category_id) value (book_title, book_page_size, book_author_id, book_category_id);
+end //
+delimiter ;
+
+call add_new_book('lập trình hướng đối tượng', 140, 1,5);
+-- VIết 1 stored procedure tìm tên sách trong database với tham số kiểu in
+delimiter //
+create procedure search_by_title_book(In book_title varchar(50))
+begin
+	select b.title , b.page_size, a.name, c.name as category_name
+    from books b
+    left join authors a on a.id = b.author_id
+    left join category c on c.id = b.category_id
+    where b.title like lower(concat('%', book_title, '%'));
+end //
+delimiter ;
+
+call search_by_title_book('Đối tượng');
+    
