@@ -260,10 +260,17 @@ where (
 )
 and char_length(nv.ho_ten) <= 15;
 -- 3.	Hiển thị thông tin của tất cả khách hàng có độ tuổi từ 18 đến 50 tuổi và có địa chỉ ở “Đà Nẵng” hoặc “Quảng Trị”.
+-- cách 1
 select *
-from khach_hang kh
-where timestampdiff(year,ngay_sinh, CURDATE()) BETWEEN 18 and 50
-and (dia_chi like '%Đà Nẵng' or dia_chi like '%Quảng Trị');
+from khach_hang 
+where timestampdiff(year,ngay_sinh, curdate()) between 18 and 50 
+and( dia_chi like '%Đà Nẵng' or dia_chi like '%Quảng Trị');
+-- cách 2:
+select *
+from khach_hang
+where timestampdiff(year,ngay_sinh, curdate()) between 18 and 50
+and dia_chi regexp 'Đà Nẵng|Quảng Trị';
+-- cách 3:
 
 -- 4. Đếm xem tương ứng với mỗi khách hàng đã từng đặt phòng bao nhiêu lần.
 -- Kết quả hiển thị được sắp xếp tăng dần theo số lần đặt phòng của khách hàng.
@@ -358,14 +365,110 @@ FROM hop_dong hd
 LEFT JOIN hop_dong_chi_tiet hdct ON hd.id_hop_dong = hdct.id_hop_dong
 GROUP BY hd.id_hop_dong;
 -- 11.	Hiển thị thông tin các Dịch vụ đi kèm đã được sử dụng bởi những Khách hàng có TenLoaiKhachHang là “Diamond” và có địa chỉ là “Vinh” hoặc “Quảng Ngãi”.
+SELECT 
+    dvdk.ten_dich_vu_di_kem, 
+    dvdk.gia, 
+    dvdk.don_vi, 
+    dvdk.trang_thai_kha_dung,
+    kh.ho_ten AS ten_khach_hang, 
+    kh.dia_chi
+FROM 
+    khach_hang kh
+    JOIN loai_khach lk ON kh.id_loai_khach = lk.id_loai_khach
+    JOIN hop_dong hd ON kh.id_khach_hang = hd.id_khach_hang
+    JOIN hop_dong_chi_tiet hdct ON hd.id_hop_dong = hdct.id_hop_dong
+    JOIN dich_vu_di_kem dvdk ON hdct.id_dich_vu_di_kem = dvdk.id_dich_vu_di_kem
+WHERE 
+    lk.ten_loai_khach = 'Diamond' 
+    AND (kh.dia_chi = 'Vinh' OR kh.dia_chi = 'Quảng Ngãi');
+
 
 -- 12.	Hiển thị thông tin IDHopDong, TenNhanVien, TenKhachHang, SoDienThoaiKhachHang, TenDichVu, SoLuongDichVuDikem (được tính dựa trên tổng Hợp đồng chi tiết), TienDatCoc của tất cả các dịch vụ đã từng được khách hàng đặt vào 3 tháng cuối năm 2019 nhưng chưa từng được khách hàng đặt vào 6 tháng đầu năm 2019.
+SELECT 
+    hd.id_hop_dong,
+    nv.ho_ten AS ten_nhan_vien,
+    kh.ho_ten AS ten_khach_hang,
+    kh.sdt AS so_dien_thoai_khach_hang,
+    dv.ten_dich_vu,
+    SUM(hdct.so_luong) AS so_luong_dich_vu_di_kem,
+    hd.tien_dat_coc
+FROM 
+    hop_dong hd
+    JOIN nhan_vien nv ON hd.id_nhan_vien = nv.id_nhan_vien
+    JOIN khach_hang kh ON hd.id_khach_hang = kh.id_khach_hang
+    JOIN dich_vu dv ON hd.id_dich_vu = dv.id_dich_vu
+    LEFT JOIN hop_dong_chi_tiet hdct ON hd.id_hop_dong = hdct.id_hop_dong
+WHERE 
+    (hd.ngay_lam_hop_dong BETWEEN '2019-10-01' AND '2019-12-31')
+    AND NOT EXISTS (
+        SELECT 1 
+        FROM hop_dong hd2 
+        WHERE hd2.id_khach_hang = hd.id_khach_hang 
+        AND (hd2.ngay_lam_hop_dong BETWEEN '2019-01-01' AND '2019-06-30')
+    )
+GROUP BY 
+    hd.id_hop_dong, nv.ho_ten, kh.ho_ten, kh.sdt, dv.ten_dich_vu, hd.tien_dat_coc;
 
 -- 13.	Hiển thị thông tin các Dịch vụ đi kèm được sử dụng nhiều nhất bởi các Khách hàng đã đặt phòng. (Lưu ý là có thể có nhiều dịch vụ có số lần sử dụng nhiều như nhau).
+SELECT 
+    dvdk.ten_dich_vu_di_kem,
+    COUNT(hdct.id_dich_vu_di_kem) AS so_lan_su_dung
+FROM 
+    hop_dong_chi_tiet hdct
+    JOIN dich_vu_di_kem dvdk ON hdct.id_dich_vu_di_kem = dvdk.id_dich_vu_di_kem
+GROUP BY 
+    dvdk.ten_dich_vu_di_kem
+HAVING 
+    COUNT(hdct.id_dich_vu_di_kem) = (
+        SELECT 
+            MAX(su_dung_count)
+        FROM (
+            SELECT 
+                COUNT(id_dich_vu_di_kem) AS su_dung_count
+            FROM 
+                hop_dong_chi_tiet
+            GROUP BY 
+                id_dich_vu_di_kem
+        ) AS max_usage
+    );
+
 
 -- 14.	Hiển thị thông tin tất cả các Dịch vụ đi kèm chỉ mới được sử dụng một lần duy nhất. Thông tin hiển thị bao gồm IDHopDong, TenLoaiDichVu, TenDichVuDiKem, SoLanSuDung.
+SELECT 
+    hd.id_hop_dong,
+    ldv.ten_loai_dich_vu,
+    dvdk.ten_dich_vu_di_kem,
+    COUNT(hdct.id_dich_vu_di_kem) AS so_lan_su_dung
+FROM 
+    hop_dong_chi_tiet hdct
+    JOIN dich_vu_di_kem dvdk ON hdct.id_dich_vu_di_kem = dvdk.id_dich_vu_di_kem
+    JOIN hop_dong hd ON hdct.id_hop_dong = hd.id_hop_dong
+    JOIN dich_vu dv ON hd.id_dich_vu = dv.id_dich_vu
+    JOIN loai_dich_vu ldv ON dv.id_loai_dich_vu = ldv.id_loai_dich_vu
+GROUP BY 
+    hd.id_hop_dong, ldv.ten_loai_dich_vu, dvdk.ten_dich_vu_di_kem
+HAVING 
+    COUNT(hdct.id_dich_vu_di_kem) = 1;
 
 -- 15.	Hiển thi thông tin của tất cả nhân viên bao gồm IDNhanVien, HoTen, TrinhDo, TenBoPhan, SoDienThoai, DiaChi mới chỉ lập được tối đa 3 hợp đồng từ năm 2018 đến 2019.
+SELECT 
+    nv.id_nhan_vien,
+    nv.ho_ten,
+    td.trinh_do,
+    bp.ten_bo_phan,
+    nv.sdt AS so_dien_thoai,
+    nv.dia_chi
+FROM 
+    nhan_vien nv
+    JOIN trinh_do td ON nv.id_trinh_do = td.id_trinh_do
+    JOIN bo_phan bp ON nv.id_bo_phan = bp.id_bo_phan
+    LEFT JOIN hop_dong hd ON nv.id_nhan_vien = hd.id_nhan_vien
+WHERE 
+    (hd.ngay_lam_hop_dong BETWEEN '2018-01-01' AND '2019-12-31')
+GROUP BY 
+    nv.id_nhan_vien, nv.ho_ten, td.trinh_do, bp.ten_bo_phan, nv.sdt, nv.dia_chi
+HAVING 
+    COUNT(hd.id_hop_dong) <= 3;
 
 -- 16.	Xóa những Nhân viên chưa từng lập được hợp đồng nào từ năm 2017 đến năm 2019.
 -- 17.	Cập nhật thông tin những khách hàng có TenLoaiKhachHang từ  Platinium lên Diamond, chỉ cập nhật những khách hàng đã từng đặt phòng với tổng Tiền thanh toán trong năm 2019 là lớn hơn 10.000.000 VNĐ.
