@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>shop pokemon</title>
+    <style>
+        body{
+            font-family: Arial, Tahoma;
+            font-size: 20px;
+            text-align: center;
+            text-decoration: none;
+        }
+        #header {
+            height: 80px;
+            background-color: green;
+            border: 1px solid #CDCDCD;
+            margin-bottom:5px;
+        }
+        #head-link {
+            height: 50px;
+            line-height: 26px;
+            padding: 0 10px;
+            border: 1px solid #CDCDCD;
+            background-color: #CDCDCD;
+            margin-bottom:5px;
+            clear: both;
+        }
+        #head-link ul {
+            display: flex;
+            justify-content: space-around; /* Căn đều khoảng cách giữa các phần tử */
+            align-items: center;
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+        }
+        #head-link ul, li, a {
+            text-decoration: none;
+            color: #1A1118;
+            font-weight: bold;
+            padding: 5px 10px;
+            transition: all 0.3s
+        }
+        #head-link ul li a:hover {
+            background-color: black;
+            color: #CDCDCD;
+            border-radius: 5px;
+        }
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 10px;
+            padding: 10px;
+        }
+
+
+        .grid-item {
+            grid-column: span 4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #f0f0f0;
+            border-radius: 10px;
+            overflow: hidden; /* Đảm bảo hình ảnh không vượt ra ngoài viền */
+        }
+
+        .grid-item img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+        }
+        #footer {
+            background-color: green;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            margin-top: 20px;
+            border-top: 2px solid #CDCDCD;
+        }
+        #footer .footer-content p {
+            margin: 5px 0;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+<div id="header">
+    <div><h1>MY PORTFOLIO</h1></div>
+</div>
+<div id="head-link">
+    <ul>
+        <li><a href="All">All</a></li>
+        <li><a href="webapp">Web App</a></li>
+        <li><a href="UI">UI/UX</a></li>
+        <li><a href="design">Graphics Design</a></li>
+        <li><a href="Mobile App">Mobile App</a></li>
+        <li><a href="Branding">Branding</a></li>
+        <li><a href="marketing">Marketing</a></li>
+    </ul>
+</div>
+<div class="grid-container">
+    <div class="grid-item">
+        <img src="hq720.jpg" alt="Image 1">
+    </div>
+    <div class="grid-item">
+        <img src="https://anhanime.com/wp-content/uploads/2022/07/Hi%CC%80nh-ne%CC%82%CC%80n-bo%CC%A3%CC%82-ba-chim-huye%CC%82%CC%80n-thoa%CC%A3i.jpg" alt="Image 2">
+    </div>
+    <div class="grid-item">
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQjv072D-DPmEN6gFuCzp1BkUO5KK0opeRTxQVQDnfS9bTPc0tNvjoKFi3_kxLeBKOyUB0&usqp=CAU" alt="Image 3">
+    </div>
+    <div class="grid-item">
+        <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEicp9cUG7C4agqmf0gzX_UG3za6O5mgKRky2_AyFDRddiwqXLIL3WrWQwEdkDtEY8lv2uJkvbFWMtt8LPZeDNM3zKiUzfqphftRjTqPDP9Pob3BjGM8DCptQgblp1H0rGSgYkWEO4pAk-M/s1600/Pokemon-Go-Pokeball-Premierball.jpg" alt="Image 4">
+    </div>
+    <div class="grid-item">
+        <img src="https://genk.mediacdn.vn/2017/megarayquazabypurpchan-d8jn6q0-1511758656055.jpg" alt="Image 5">
+    </div>
+    <div class="grid-item">
+        <img src="https://gamek.mediacdn.vn/133514250583805952/2020/5/15/photo-2-15895605087651647392812.jpg" alt="Image 6">
+    </div>
+    <div class="grid-item">
+        <img src="https://gamek.mediacdn.vn/133514250583805952/2020/5/15/photo-1-15895605072511077113975.jpg" alt="Image 4">
+    </div>
+    <div class="grid-item">
+        <img src="https://gamek.mediacdn.vn/133514250583805952/2020/5/15/photo-1-1589560505699156260919.jpg" alt="Image 5">
+    </div>
+    <div class="grid-item">
+        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ0Fxfn8nEY6EBUozBGYTV1sFrNlC_ew6zpY0ToFo39oiZ7LLWspMgUn-OATPbRjHJtp68&usqp=CAU" alt="Image 6">
+    </div>
+</div>
+<div id="footer">
+    <div class="footer-content">
+        <p><strong>Liên hệ:</strong> 123 Đường ABC, Thành phố XYZ</p>
+        <p><strong>Số điện thoại:</strong> 0123 456 789</p>
+        <p><strong>Email:</strong> contact@pokemonshop.com</p>
+    </div>
+</div>
+
+</body>
+</html>
