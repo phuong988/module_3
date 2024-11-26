@@ -26,12 +26,13 @@
             clear: both;
         }
         #head-link ul {
-            display: flex;
-            justify-content: space-around; /* Căn đều khoảng cách giữa các phần tử */
-            align-items: center;
-            list-style-type: none;
-            margin: 0;
+            text-align: center;
             padding: 0;
+        }
+
+        #head-link ul li {
+            display: inline; /* Các mục danh sách được đặt theo dòng */
+            margin: 0 10px; /* Khoảng cách giữa các mục text */
         }
         #head-link ul, li, a {
             text-decoration: none;
@@ -48,21 +49,19 @@
         .grid-container {
             display: grid;
             grid-template-columns: repeat(12, 1fr);
-            gap: 10px;
-            padding: 10px;
+            gap: 15px; /* Khoảng cách giữa các ảnh */
+            padding: 10px 15px; /* Khoảng cách cách lề trái và phải là 15px */
+            box-sizing: border-box; /* Đảm bảo padding không ảnh hưởng đến kích thước tổng thể */
         }
-
-
         .grid-item {
             grid-column: span 4;
             display: flex;
-            justify-content: center;
-            align-items: center;
+            justify-content: center; /* Căn giữa nội dung theo chiều ngang */
+            align-items: center; /* Căn giữa nội dung theo chiều dọc */
             background-color: #f0f0f0;
             border-radius: 10px;
             overflow: hidden; /* Đảm bảo hình ảnh không vượt ra ngoài viền */
         }
-
         .grid-item img {
             max-width: 100%;
             height: auto;
