@@ -5,7 +5,9 @@ import model.Book;
 import java.util.ArrayList;
 
 public class BookDAO implements DAOInterface<Book> {
-
+    public static BookDAO getInstance(){
+        return new BookDAO();
+    }
 
     @Override
     public int insert(Book book) {

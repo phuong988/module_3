@@ -3,12 +3,11 @@ package DAO;
 import java.util.ArrayList;
 
 public interface DAOInterface<T> {
-    public static CustomerDAO getInstance() {}
     public int insert(T t);
 
-    int undate(T t);
+    public int undate(T t);
 
-    int delete(T t);
+    public int delete(T t);
 
      ArrayList<T> getAll();
 
