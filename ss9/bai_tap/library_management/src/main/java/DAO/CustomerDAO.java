@@ -3,6 +3,7 @@ package DAO;
 import model.Customer;
 
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
@@ -14,7 +15,13 @@ public class CustomerDAO implements DAOInterface<Customer>  {
     @Override
     public int insert(Customer customer) {
         Connection connection = BaseRepository.getConnectDB();
-        Statement statement = connection.createStatement();
+        try {
+            Statement statement = connection.createStatement();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+
         return 0;
     }
 
@@ -27,6 +34,7 @@ public class CustomerDAO implements DAOInterface<Customer>  {
     public int delete(Customer customer) {
         return 0;
     }
+
 
     @Override
     public ArrayList<Customer> getAll() {
