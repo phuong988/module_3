@@ -34,9 +34,6 @@ public class StudentController extends HttpServlet {
             default:
                 List<Student> students = iStudentService.getAll();
                 req.setAttribute("students", students);
-                if (students.isEmpty()) {
-                    req.setAttribute("message", "Danh sách rỗng.");
-                }
                 req.getRequestDispatcher("WEB-INF/view/student/list.jsp").forward(req, resp);
                 break;
         }
